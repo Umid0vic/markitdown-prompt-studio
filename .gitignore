@@ -34,3 +34,6 @@ Thumbs.db
 # App outputs
 *.zip
 *.log
+
+# Prompt library (user data)
+.prompt_library/
