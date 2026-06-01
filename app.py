@@ -34,62 +34,215 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Dark theme overrides */
+    /* ─── Base Dark Theme ─── */
     .stApp {
-        background-color: #0d0d0d;
-        color: #f0f0f0;
+        background-color: #0a0a0f;
+        color: #e8e8ed;
     }
     section[data-testid="stSidebar"] {
-        background-color: #111111;
-        border-right: 1px solid #2a2a2a;
+        background-color: #0f0f14;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    section[data-testid="stSidebar"] .stMarkdown p {
+        color: #a0a0b0;
+        font-size: 0.9rem;
+    }
+
+    /* ─── Typography ─── */
+    .stMarkdown h1 {
         color: #ffffff;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        font-size: 1.8rem !important;
+        margin-bottom: 0.25rem !important;
     }
-    .stTextArea textarea, .stTextInput input, .stSelectbox select {
-        background-color: #1a1a1a !important;
-        color: #f0f0f0 !important;
-        border: 1px solid #333333 !important;
-        border-radius: 8px !important;
+    .stMarkdown h2 {
+        color: #f0f0f5;
+        font-weight: 600;
+        font-size: 1.3rem !important;
+        letter-spacing: -0.01em;
+        margin-top: 1.5rem !important;
     }
+    .stMarkdown h3 {
+        color: #d0d0da;
+        font-weight: 600;
+        font-size: 1.05rem !important;
+    }
+
+    /* ─── Form Controls ─── */
+    .stTextArea textarea, .stTextInput input {
+        background-color: #12121a !important;
+        color: #e8e8ed !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
+        font-size: 0.9rem !important;
+        transition: border-color 0.2s ease !important;
+    }
+    .stTextArea textarea:focus, .stTextInput input:focus {
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+    }
+    .stSelectbox > div > div {
+        background-color: #12121a !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 10px !important;
+    }
+
+    /* ─── Cards / Containers ─── */
     div[data-testid="stExpander"] {
-        background-color: #141414;
-        border: 1px solid #2a2a2a;
-        border-radius: 10px;
-    }
-    .stDataFrame {
-        border-radius: 8px;
+        background-color: #12121a;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
         overflow: hidden;
     }
     div[data-testid="stMetric"] {
-        background-color: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 10px;
-        padding: 12px;
+        background-color: #12121a;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 16px 20px;
     }
-    .stDownloadButton button {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        border-radius: 8px !important;
+    div[data-testid="stMetric"] label {
+        color: #8888a0 !important;
+        font-size: 0.75rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #ffffff !important;
         font-weight: 600 !important;
     }
+
+    /* ─── Data Tables ─── */
+    .stDataFrame {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* ─── Buttons ─── */
+    .stDownloadButton button {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1.25rem !important;
+        font-size: 0.85rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
+    }
     .stDownloadButton button:hover {
-        background-color: #e0e0e0 !important;
+        background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35) !important;
+        transform: translateY(-1px) !important;
+    }
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
     }
     .stButton button {
-        border-radius: 8px !important;
-        border: 1px solid #444 !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background-color: #1a1a24 !important;
+        color: #e8e8ed !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
     }
+    .stButton button:hover {
+        border-color: rgba(99, 102, 241, 0.4) !important;
+        background-color: #1e1e2a !important;
+    }
+
+    /* ─── Tabs ─── */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0px;
+        background-color: #12121a;
+        border-radius: 10px;
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        color: #8888a0;
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 8px 16px;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: rgba(99, 102, 241, 0.15) !important;
+        color: #a5b4fc !important;
+    }
+
+    /* ─── Action Bar ─── */
+    .action-bar {
+        background: linear-gradient(180deg, rgba(18, 18, 26, 0.95) 0%, rgba(18, 18, 26, 0.85) 100%);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* ─── Dividers ─── */
+    hr {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+        margin: 2rem 0 !important;
+    }
+
+    /* ─── Status messages ─── */
+    .stAlert {
+        border-radius: 10px !important;
+        border: none !important;
+    }
+
+    /* ─── Hide default footer ─── */
     footer {
         visibility: hidden;
     }
     .app-footer {
         text-align: center;
-        color: #666;
+        color: #4a4a60;
         padding: 2rem 0 1rem 0;
-        font-size: 0.85rem;
-        border-top: 1px solid #2a2a2a;
+        font-size: 0.8rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
         margin-top: 3rem;
+        letter-spacing: 0.02em;
+    }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ─── Section Cards ─── */
+    .section-card {
+        background-color: #12121a;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .section-card h3 {
+        margin-top: 0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -126,14 +279,12 @@ def upload_size(uploaded_file) -> str:
 # ─── Sidebar ────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown("# 📝 MarkItDown Prompt Studio")
-    st.markdown("*Convert files into Markdown and build clean prompts for AI agents.*")
+    st.markdown("# MarkItDown")
+    st.caption("Prompt Studio")
     st.markdown("---")
 
-    st.markdown("**Workflow Settings**")
-
-    mode = st.radio("Mode", ["Single file", "Batch files"], key="mode_radio")
-    if st.button("Clear session", key="clear_session_btn"):
+    mode = st.radio("Mode", ["Single file", "Batch files"], key="mode_radio", horizontal=True)
+    if st.button("Clear session", key="clear_session_btn", use_container_width=True):
         st.session_state.conversion_results = []
         st.session_state.generated_prompts = {}
         st.session_state.edited_markdown = {}
@@ -141,11 +292,11 @@ with st.sidebar:
         st.rerun()
 
     st.markdown("---")
-    st.markdown("**Prompt Settings**")
+    st.markdown("**Prompt**")
 
-    prompt_type = st.selectbox("Prompt type", PROMPT_TYPES, key="prompt_type_select")
+    prompt_type = st.selectbox("Type", PROMPT_TYPES, key="prompt_type_select")
 
-    agent_role = st.selectbox("Agent role", AGENT_ROLES, key="agent_role_select")
+    agent_role = st.selectbox("Role", AGENT_ROLES, key="agent_role_select")
     custom_role = ""
     if agent_role == "Custom role":
         custom_role = st.text_input("Custom role", key="custom_role_input")
@@ -156,7 +307,7 @@ with st.sidebar:
         custom_format = st.text_input("Custom format", key="custom_format_input")
 
     st.markdown("---")
-    st.markdown("**Context Preprocessing**")
+    st.markdown("**Preprocessing**")
 
     context_modes = [
         "Use full document",
@@ -180,34 +331,31 @@ with st.sidebar:
     chunk_overlap = 200
     if enable_chunking:
         chunk_size = st.number_input("Chunk size (tokens)", min_value=100, value=4000, step=500, key="chunk_size_input")
-        chunk_overlap = st.number_input("Chunk overlap (tokens)", min_value=0, value=200, step=50, key="chunk_overlap_input")
+        chunk_overlap = st.number_input("Overlap (tokens)", min_value=0, value=200, step=50, key="chunk_overlap_input")
         if chunk_overlap >= chunk_size:
-            st.warning("Overlap must be less than chunk size. It will be clamped automatically.")
+            st.warning("Overlap must be less than chunk size.")
 
     st.markdown("---")
 
-    with st.expander("📚 Resources"):
+    with st.expander("Resources"):
         st.markdown("""
 - [MarkItDown GitHub](https://github.com/microsoft/markitdown)
-- [MarkItDown PyPI](https://pypi.org/project/markitdown/)
 - [Streamlit Docs](https://docs.streamlit.io/)
 - [tiktoken](https://github.com/openai/tiktoken)
         """)
 
-    st.markdown("---")
-    st.caption(f"Supported formats: {SUPPORTED_FORMAT_LABEL}.")
-    token_method = "tiktoken (cl100k_base)" if TIKTOKEN_AVAILABLE else "character estimate (1 token ≈ 4 chars)"
-    st.caption(f"Token estimation: {token_method}")
+    st.caption(f"Formats: {SUPPORTED_FORMAT_LABEL}")
+    token_method = "tiktoken" if TIKTOKEN_AVAILABLE else "~4 chars/token"
+    st.caption(f"Tokens: {token_method}")
 
 # ─── Main Area ──────────────────────────────────────────────────────────────
 
 st.markdown("# MarkItDown Prompt Studio")
-st.markdown("Convert files into Markdown and build clean prompts for AI agents.")
-st.caption(f"Supported formats: {SUPPORTED_FORMAT_LABEL}.")
+st.caption("Convert files into Markdown and build clean prompts for AI agents.")
 
 # ─── Upload Section ─────────────────────────────────────────────────────────
 
-st.markdown("## 📁 Upload Files")
+st.markdown("## Upload")
 
 accept_multiple = mode == "Batch files"
 uploaded_files = st.file_uploader(
@@ -215,7 +363,8 @@ uploaded_files = st.file_uploader(
     accept_multiple_files=accept_multiple,
     key="file_uploader",
     type=SUPPORTED_FILE_TYPES,
-    help=f"Supported formats: {SUPPORTED_FORMAT_LABEL}.",
+    help=f"Supported: {SUPPORTED_FORMAT_LABEL}",
+    label_visibility="collapsed",
 )
 
 # Normalize to list
@@ -301,7 +450,7 @@ if uploaded_files:
 results = st.session_state.conversion_results
 
 if results:
-    st.markdown("## 📊 Conversion Results")
+    st.markdown("## Conversion Results")
 
     if len(results) > 1:
         df = pd.DataFrame([{
@@ -316,7 +465,7 @@ if results:
 
     # ─── Markdown Preview/Editor ────────────────────────────────────────────
 
-    st.markdown("## 📄 Markdown Preview & Editor")
+    st.markdown("## Markdown Output")
 
     successful = [r for r in results if r["status"] != "error"]
 
@@ -326,7 +475,30 @@ if results:
         if len(successful) == 1:
             r = successful[0]
             key = r["output_filename"]
-            tab_preview, tab_raw = st.tabs(["Preview", "Raw Editor"])
+            md_content = st.session_state.edited_markdown.get(key, r["markdown"])
+            chars = len(md_content)
+            tokens = estimate_tokens(md_content)
+
+            # ── Action bar: metrics + download ABOVE content ──
+            col_m1, col_m2, col_m3, col_dl = st.columns([1, 1, 1, 1.5])
+            with col_m1:
+                st.metric("Characters", f"{chars:,}")
+            with col_m2:
+                st.metric("Tokens", f"{tokens:,}")
+            with col_m3:
+                st.metric("File", r["output_filename"])
+            with col_dl:
+                st.download_button(
+                    "⬇ Download Markdown",
+                    data=md_content,
+                    file_name=r["output_filename"],
+                    mime="text/markdown",
+                    key="dl_single_md",
+                    use_container_width=True,
+                )
+
+            # ── Content tabs ──
+            tab_preview, tab_raw = st.tabs(["Preview", "Edit"])
             with tab_preview:
                 st.markdown(st.session_state.edited_markdown.get(key, r["markdown"]))
             with tab_raw:
@@ -335,31 +507,36 @@ if results:
                     value=st.session_state.edited_markdown.get(key, r["markdown"]),
                     height=400,
                     key=f"editor_{key}",
+                    label_visibility="collapsed",
                 )
                 st.session_state.edited_markdown[key] = edited
-
-            col1, col2 = st.columns(2)
-            with col1:
-                md_content = st.session_state.edited_markdown.get(key, r["markdown"])
-                st.download_button(
-                    "⬇ Download .md",
-                    data=md_content,
-                    file_name=r["output_filename"],
-                    mime="text/markdown",
-                    key="dl_single_md",
-                )
-            with col2:
-                chars = len(md_content)
-                tokens = estimate_tokens(md_content)
-                st.metric("Characters", f"{chars:,}")
-                st.metric("Estimated Tokens", f"{tokens:,}")
         else:
-            # Batch mode tabs per file — use output_filename for unique tabs/keys
+            # ── Batch: download ZIP at top ──
+            zip_files = {}
+            for r in successful:
+                key = r["output_filename"]
+                content = st.session_state.edited_markdown.get(key, r["markdown"])
+                zip_files[r["output_filename"]] = content
+
+            col_info, col_dl = st.columns([2, 1])
+            with col_info:
+                st.metric("Files converted", f"{len(successful)}")
+            with col_dl:
+                st.download_button(
+                    "⬇ Download all as ZIP",
+                    data=create_zip(zip_files),
+                    file_name="markitdown_converted.zip",
+                    mime="application/zip",
+                    key="dl_batch_zip",
+                    use_container_width=True,
+                )
+
+            # ── Per-file tabs ──
             file_tabs = st.tabs([r["output_filename"] for r in successful])
             for tab, r in zip(file_tabs, successful):
                 key = r["output_filename"]
                 with tab:
-                    tab_preview, tab_raw = st.tabs(["Preview", "Raw Editor"])
+                    tab_preview, tab_raw = st.tabs(["Preview", "Edit"])
                     with tab_preview:
                         st.markdown(st.session_state.edited_markdown.get(key, r["markdown"]))
                     with tab_raw:
@@ -368,49 +545,36 @@ if results:
                             value=st.session_state.edited_markdown.get(key, r["markdown"]),
                             height=300,
                             key=f"editor_{key}",
+                            label_visibility="collapsed",
                         )
                         st.session_state.edited_markdown[key] = edited
-
-            # Batch download
-            zip_files = {}
-            for r in successful:
-                key = r["output_filename"]
-                content = st.session_state.edited_markdown.get(key, r["markdown"])
-                zip_files[r["output_filename"]] = content
-
-            st.download_button(
-                "⬇ Download all as ZIP",
-                data=create_zip(zip_files),
-                file_name="markitdown_converted.zip",
-                mime="application/zip",
-                key="dl_batch_zip",
-            )
 
     # ─── Prompt Builder ─────────────────────────────────────────────────────
 
     st.markdown("---")
-    st.markdown("## 🛠️ Prompt Builder")
+    st.markdown("## Prompt Builder")
 
     task_input = st.text_area(
         "Task",
-        placeholder="Example: Analyze this document and create a detailed implementation plan.",
-        height=120,
+        placeholder="e.g. Analyze this document and create a detailed implementation plan.",
+        height=100,
         key="task_input",
     )
 
-    constraints_input = st.text_area(
-        "Constraints",
-        value=DEFAULT_CONSTRAINTS,
-        height=150,
-        key="constraints_input",
-    )
+    with st.expander("Constraints & Criteria", expanded=False):
+        constraints_input = st.text_area(
+            "Constraints",
+            value=DEFAULT_CONSTRAINTS,
+            height=120,
+            key="constraints_input",
+        )
 
-    success_criteria_input = st.text_area(
-        "Success Criteria",
-        value=DEFAULT_SUCCESS_CRITERIA,
-        height=150,
-        key="success_criteria_input",
-    )
+        success_criteria_input = st.text_area(
+            "Success Criteria",
+            value=DEFAULT_SUCCESS_CRITERIA,
+            height=120,
+            key="success_criteria_input",
+        )
 
     custom_template = ""
     if prompt_type == "Custom prompt":
@@ -523,7 +687,7 @@ if results:
 
     if enable_chunking and successful:
         st.markdown("---")
-        st.markdown("## 🧩 Chunking")
+        st.markdown("## Chunking")
 
         # Use first successful file for single mode, or combined for batch
         if len(successful) == 1:
@@ -605,7 +769,7 @@ if results:
 
     if st.session_state.generated_prompts:
         st.markdown("---")
-        st.markdown("## 📋 Final Prompt")
+        st.markdown("## Final Prompt")
 
         gen_prompts = st.session_state.generated_prompts
         prompt_keys = list(gen_prompts.keys())
@@ -625,44 +789,71 @@ if results:
         prompt_text = gen_prompts[selected_key]
         prompt_tokens = estimate_tokens(prompt_text)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Prompt Characters", f"{len(prompt_text):,}")
-        with col2:
-            st.metric("Prompt Tokens", f"{prompt_tokens:,}")
+        # ── Export bar at TOP ──
+        col_m1, col_m2, col_dl1, col_dl2, col_dl3 = st.columns([1, 1, 1, 1, 1])
+        with col_m1:
+            st.metric("Characters", f"{len(prompt_text):,}")
+        with col_m2:
+            st.metric("Tokens", f"{prompt_tokens:,}")
+        with col_dl1:
+            st.download_button(
+                "⬇ Download .md",
+                data=prompt_text,
+                file_name=selected_key,
+                mime="text/markdown",
+                key="dl_prompt_md",
+                use_container_width=True,
+            )
+        with col_dl2:
+            txt_name = selected_key.rsplit(".", 1)[0] + ".txt"
+            st.download_button(
+                "⬇ Download .txt",
+                data=prompt_text,
+                file_name=txt_name,
+                mime="text/plain",
+                key="dl_prompt_txt",
+                use_container_width=True,
+            )
+        with col_dl3:
+            if len(gen_prompts) > 1:
+                st.download_button(
+                    "⬇ All as ZIP",
+                    data=create_zip(st.session_state.generated_prompts),
+                    file_name="prompts.zip",
+                    mime="application/zip",
+                    key="dl_all_prompts_zip",
+                    use_container_width=True,
+                )
 
         warning = token_warning(prompt_tokens)
         if warning:
             st.warning(warning)
 
-        # ─── Quality Checklist (before export) ──────────────────────────────
+        # ─── Quality Checklist ──────────────────────────────────────────────
 
-        st.markdown("### ✅ Prompt Quality Checklist")
+        with st.expander("Quality Checklist", expanded=False):
+            role_text = custom_role if agent_role == "Custom role" else agent_role
+            format_text = custom_format if output_format == "Custom format" else output_format
 
-        role_text = custom_role if agent_role == "Custom role" else agent_role
-        format_text = custom_format if output_format == "Custom format" else output_format
+            checks = quality_checklist(
+                role=role_text,
+                task=task_input,
+                context=prompt_text,
+                output_format=format_text,
+                constraints=constraints_input,
+                success_criteria=success_criteria_input,
+                filename=successful[0]["filename"] if successful else "",
+                token_count=prompt_tokens,
+            )
 
-        checks = quality_checklist(
-            role=role_text,
-            task=task_input,
-            context=prompt_text,
-            output_format=format_text,
-            constraints=constraints_input,
-            success_criteria=success_criteria_input,
-            filename=successful[0]["filename"] if successful else "",
-            token_count=prompt_tokens,
-        )
-
-        for label, status in checks:
-            if status == "pass":
-                st.markdown(f"✓ {label}")
-            else:
-                st.markdown(f"⚠ {label}")
-
-        st.markdown("---")
+            for label, status in checks:
+                if status == "pass":
+                    st.markdown(f"✓ {label}")
+                else:
+                    st.markdown(f"⚠ {label}")
 
         # Preview / Edit
-        tab_preview, tab_raw = st.tabs(["Preview", "Raw Editor"])
+        tab_preview, tab_raw = st.tabs(["Preview", "Edit"])
         with tab_preview:
             st.markdown(prompt_text)
         with tab_raw:
@@ -671,40 +862,11 @@ if results:
                 value=prompt_text,
                 height=400,
                 key=f"prompt_editor_{selected_key}",
+                label_visibility="collapsed",
             )
             # Write edits back to the generated_prompts dict
             st.session_state.generated_prompts[selected_key] = edited_prompt
             prompt_text = edited_prompt
-
-        # Export buttons
-        st.markdown("**Export**")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.download_button(
-                "⬇ Download .md",
-                data=prompt_text,
-                file_name=selected_key,
-                mime="text/markdown",
-                key="dl_prompt_md",
-            )
-        with col2:
-            txt_name = selected_key.rsplit(".", 1)[0] + ".txt"
-            st.download_button(
-                "⬇ Download .txt",
-                data=prompt_text,
-                file_name=txt_name,
-                mime="text/plain",
-                key="dl_prompt_txt",
-            )
-        with col3:
-            if len(gen_prompts) > 1:
-                st.download_button(
-                    "⬇ All prompts as ZIP",
-                    data=create_zip(st.session_state.generated_prompts),
-                    file_name="prompts.zip",
-                    mime="application/zip",
-                    key="dl_all_prompts_zip",
-                )
 
 # ─── Footer ────────────────────────────────────────────────────────────────
 
