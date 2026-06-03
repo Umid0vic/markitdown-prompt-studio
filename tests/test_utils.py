@@ -1,4 +1,4 @@
-from utils import (
+from backend.utils import (
     SUPPORTED_EXTENSIONS,
     chunk_text,
     convert_file,

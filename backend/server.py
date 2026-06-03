@@ -9,24 +9,20 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-import sys
 import os
 
-# Add parent dir to path so we can import existing modules
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from utils import (
+from .utils import (
     estimate_tokens, sanitize_filename, deduplicate_filename,
     convert_file, preprocess_context, chunk_text, create_metadata,
     quality_checklist, token_warning, create_zip, TIKTOKEN_AVAILABLE,
     SUPPORTED_FILE_TYPES, SUPPORTED_FORMAT_LABEL,
 )
-from templates import (
+from .templates import (
     PROMPT_TYPES, AGENT_ROLES, OUTPUT_FORMATS,
     DEFAULT_CONSTRAINTS, DEFAULT_SUCCESS_CRITERIA,
     generate_prompt, TemplateError,
 )
-from library import (
+from .library import (
     get_folders, create_folder, rename_folder, delete_folder,
     get_prompts, save_prompt, load_prompt_content, delete_prompt,
     toggle_favorite, move_prompt, get_all_tags,

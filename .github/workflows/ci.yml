@@ -23,7 +23,7 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
 
       - name: Compile Python files
-        run: python -m py_compile app.py utils.py templates.py
+        run: python -m py_compile backend/server.py backend/utils.py backend/templates.py backend/library.py
 
       - name: Run tests
         run: python -m pytest
