@@ -23,7 +23,6 @@ dist/
 # Local configuration and secrets
 .env
 .env.*
-.streamlit/secrets.toml
 
 # OS/editor files
 .DS_Store

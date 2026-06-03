@@ -25,7 +25,7 @@ if not exist "%DEPS_MARKER%" (
 )
 
 if "%INSTALL_DEPS%"=="0" (
-    ".venv\Scripts\python.exe" -c "import streamlit, markitdown, pandas" >nul 2>nul
+    ".venv\Scripts\python.exe" -c "import fastapi, uvicorn, markitdown" >nul 2>nul
     if errorlevel 1 set "INSTALL_DEPS=1"
 )
 
@@ -44,10 +44,10 @@ if "%INSTALL_DEPS%"=="1" (
 )
 
 echo.
-echo Opening app at http://localhost:8501
+echo Opening app at http://localhost:8000
 echo Press Ctrl+C in this window to stop the app.
 echo.
 
-".venv\Scripts\python.exe" -m streamlit run app.py
+".venv\Scripts\python.exe" run_server.py
 
 pause

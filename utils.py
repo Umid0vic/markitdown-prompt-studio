@@ -64,7 +64,8 @@ def convert_file(uploaded_file) -> dict:
     Convert an uploaded file using MarkItDown.
     Returns dict with keys: filename, status, markdown, error, char_count, token_count, output_filename.
     """
-    filename = uploaded_file.name
+    # Support both Streamlit UploadedFile and FastAPI UploadFile
+    filename = getattr(uploaded_file, 'name', None) or getattr(uploaded_file, 'filename', 'unnamed')
     safe_name = sanitize_filename(filename)
     result = {
         "filename": filename,
@@ -77,7 +78,8 @@ def convert_file(uploaded_file) -> dict:
         "duration_seconds": 0.0,
     }
 
-    if uploaded_file.size == 0:
+    file_size = getattr(uploaded_file, 'size', None)
+    if file_size == 0:
         result["status"] = "error"
         result["error"] = "File is empty."
         return result
@@ -93,7 +95,18 @@ def convert_file(uploaded_file) -> dict:
         from markitdown import MarkItDown
         suffix = Path(filename).suffix
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-            tmp.write(uploaded_file.getbuffer())
+            # Handle different file object types
+            if hasattr(uploaded_file, 'getbuffer'):
+                # Streamlit UploadedFile
+                tmp.write(uploaded_file.getbuffer())
+            elif hasattr(uploaded_file, 'file'):
+                # FastAPI UploadFile
+                import asyncio
+                content = uploaded_file.file.read()
+                tmp.write(content)
+                uploaded_file.file.seek(0)
+            else:
+                tmp.write(uploaded_file.read())
             tmp_path = tmp.name
 
         md = MarkItDown()

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarkItDown Prompt Studio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>Prompt Studio</h1>
+        <div class="subtitle">MarkItDown</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="convert">
+          <span class="icon">⚡</span> Convert
+        </button>
+        <button class="nav-item" data-page="library">
+          <span class="icon">📂</span> Library
+        </button>
+        <button class="nav-item" data-page="templates">
+          <span class="icon">📋</span> Templates
+        </button>
+        <button class="nav-item" data-page="settings">
+          <span class="icon">⚙️</span> Settings
+        </button>
+
+        <div class="nav-divider"></div>
+
+        <!-- Quick folders -->
+        <div id="sidebar-folders"></div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-prompts">0</div>
+            <div class="stat-label">Prompts</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-folders">0</div>
+            <div class="stat-label">Folders</div>
+          </div>
+        </div>
+        <button class="btn btn-icon" id="theme-toggle" title="Toggle theme">☀</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <!-- ═══ Convert Page ═══ -->
+      <div class="page" id="page-convert">
+        <div class="page-header">
+          <h2>Convert & Build</h2>
+          <div class="description">Upload files, convert to Markdown, and generate prompts.</div>
+        </div>
+        <div class="page-body">
+          <!-- Upload -->
+          <div class="upload-zone" id="upload-zone">
+            <div class="icon">📄</div>
+            <div class="text"><strong>Drop files here</strong> or click to browse</div>
+            <div class="text text-muted mt-2" style="font-size:var(--text-xs)">PDF, DOCX, PPTX, XLSX, XLS</div>
+            <input type="file" id="file-input" hidden multiple accept=".pdf,.docx,.pptx,.xlsx,.xls">
+          </div>
+
+          <!-- File list -->
+          <div id="file-list" class="mt-4"></div>
+
+          <!-- Convert button -->
+          <button class="btn btn-primary btn-lg mt-4 hidden" id="convert-btn">⚡ Convert Files</button>
+
+          <!-- Post-conversion: two-column layout -->
+          <div id="post-convert" class="hidden mt-5">
+            <div class="convert-grid">
+              <!-- LEFT: Prompt Builder (primary focus) -->
+              <div class="convert-primary">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Build Prompt</h3>
+                  </div>
+
+                  <div class="input-group mb-4">
+                    <label class="input-label">Task</label>
+                    <textarea class="textarea" id="task-input" placeholder="What should the AI do with this content?" style="min-height:80px"></textarea>
+                  </div>
+
+                  <div class="flex gap-4 mb-4" style="flex-wrap:wrap">
+                    <div class="input-group" style="flex:1;min-width:140px">
+                      <label class="input-label">Type</label>
+                      <select class="select" id="prompt-type"></select>
+                    </div>
+                    <div class="input-group" style="flex:1;min-width:140px">
+                      <label class="input-label">Role</label>
+                      <select class="select" id="agent-role"></select>
+                    </div>
+                    <div class="input-group" style="flex:1;min-width:140px">
+                      <label class="input-label">Output Format</label>
+                      <select class="select" id="output-format"></select>
+                    </div>
+                  </div>
+
+                  <button class="btn btn-primary" id="generate-btn">Generate Prompt</button>
+                </div>
+
+                <!-- Generated Prompt -->
+                <div id="generated-prompt" class="hidden mt-4">
+                  <div class="action-bar">
+                    <div class="metrics-row" id="prompt-metrics"></div>
+                    <div class="spacer"></div>
+                    <button class="btn btn-primary" id="save-prompt-btn">💾 Save</button>
+                    <button class="btn" id="copy-prompt-btn">📋 Copy</button>
+                    <button class="btn" id="download-prompt-btn">⬇</button>
+                  </div>
+
+                  <!-- Token budget -->
+                  <div id="token-budget-bar" class="hidden mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs text-muted">Token Budget</span>
+                      <span class="text-xs" id="budget-label"></span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" id="budget-fill"></div>
+                    </div>
+                  </div>
+
+                  <div class="tabs" id="prompt-tabs">
+                    <button class="tab active" data-tab="prompt-preview">Preview</button>
+                    <button class="tab" data-tab="prompt-edit">Edit</button>
+                  </div>
+
+                  <div class="tab-content active mt-4" id="tab-prompt-preview">
+                    <div class="markdown-preview" id="prompt-preview"></div>
+                  </div>
+                  <div class="tab-content mt-4" id="tab-prompt-edit">
+                    <textarea class="textarea" id="prompt-editor" style="min-height:300px;font-family:var(--font-mono)"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT: Converted context (secondary, collapsible) -->
+              <div class="convert-secondary">
+                <div class="context-panel">
+                  <div class="context-panel-header" id="context-toggle">
+                    <span class="text-sm font-500">📝 Converted Context</span>
+                    <span class="metrics-inline" id="result-metrics"></span>
+                    <button class="btn btn-ghost btn-sm" id="context-collapse-btn">▼</button>
+                  </div>
+                  <div class="context-panel-body" id="context-panel-body">
+                    <div class="flex gap-2 mb-4">
+                      <button class="btn btn-sm" id="copy-md-btn">📋 Copy</button>
+                      <button class="btn btn-sm" id="download-md-btn">⬇ .md</button>
+                    </div>
+
+                    <div class="tabs" id="result-tabs">
+                      <button class="tab active" data-tab="preview">Preview</button>
+                      <button class="tab" data-tab="edit">Edit</button>
+                    </div>
+
+                    <div class="tab-content active mt-4" id="tab-preview">
+                      <div class="markdown-preview" id="markdown-preview"></div>
+                    </div>
+                    <div class="tab-content mt-4" id="tab-edit">
+                      <textarea class="textarea" id="markdown-editor" style="min-height:300px;font-family:var(--font-mono)"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Library Page ═══ -->
+      <div class="page hidden" id="page-library">
+        <div class="page-header">
+          <h2>Prompt Library</h2>
+          <div class="description">Organize, search, and manage your saved prompts.</div>
+        </div>
+        <div class="page-body">
+          <!-- Toolbar -->
+          <div class="flex gap-3 mb-5" style="flex-wrap:wrap">
+            <input class="input" id="lib-search" placeholder="Search prompts..." style="max-width:320px">
+            <select class="select" id="lib-tag-filter" style="max-width:160px">
+              <option value="">All Tags</option>
+            </select>
+            <button class="btn" id="lib-fav-toggle">☆ Favorites</button>
+            <div class="spacer" style="flex:1"></div>
+            <button class="btn" id="lib-new-folder-btn">+ New Folder</button>
+            <button class="btn" id="lib-import-btn">Import</button>
+            <button class="btn" id="lib-export-btn">⬇ Export</button>
+          </div>
+
+          <div class="flex gap-5">
+            <!-- Folder sidebar -->
+            <div style="width:200px;flex-shrink:0">
+              <div class="folder-item active" data-folder="">
+                📂 All Prompts
+              </div>
+              <div id="library-folders"></div>
+            </div>
+
+            <!-- Prompt list -->
+            <div class="flex-1">
+              <div id="library-prompts"></div>
+              <div id="library-empty" class="hidden" style="text-align:center;padding:var(--space-12);color:var(--text-muted)">
+                No prompts found. Generate and save prompts from the Convert page!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Templates Page ═══ -->
+      <div class="page hidden" id="page-templates">
+        <div class="page-header">
+          <h2>Template Library</h2>
+          <div class="description">Use and customize prompt templates with variables.</div>
+        </div>
+        <div class="page-body">
+          <div class="tabs mb-5" id="template-tabs">
+            <button class="tab active" data-tab="builtin-templates">Built-in</button>
+            <button class="tab" data-tab="custom-templates">My Templates</button>
+            <button class="tab" data-tab="create-template">Create</button>
+          </div>
+
+          <div class="tab-content active" id="tab-builtin-templates">
+            <div id="builtin-template-list"></div>
+          </div>
+
+          <div class="tab-content" id="tab-custom-templates">
+            <div id="custom-template-list"></div>
+          </div>
+
+          <div class="tab-content" id="tab-create-template">
+            <div class="card" style="max-width:700px">
+              <h3 class="card-title mb-5">Create Custom Template</h3>
+              <p class="text-sm text-muted mb-4">Use <code>{{variable_name}}</code> for dynamic placeholders. <code>{{context}}</code> is reserved for document content.</p>
+
+              <div class="input-group mb-4">
+                <label class="input-label">Name</label>
+                <input class="input" id="tpl-name" placeholder="My Template">
+              </div>
+              <div class="input-group mb-4">
+                <label class="input-label">Description</label>
+                <input class="input" id="tpl-desc" placeholder="What this template does">
+              </div>
+              <div class="input-group mb-4">
+                <label class="input-label">Variables (comma-separated)</label>
+                <input class="input" id="tpl-vars" placeholder="language, framework, audience">
+              </div>
+              <div class="input-group mb-4">
+                <label class="input-label">Tags (comma-separated)</label>
+                <input class="input" id="tpl-tags" placeholder="coding, review">
+              </div>
+              <div class="input-group mb-4">
+                <label class="input-label">Template Body</label>
+                <textarea class="textarea" id="tpl-body" style="min-height:250px;font-family:var(--font-mono)" placeholder="## Role&#10;&#10;{{role}}&#10;&#10;## Task&#10;&#10;{{task}}&#10;&#10;## Context&#10;&#10;{{context}}"></textarea>
+              </div>
+              <button class="btn btn-primary btn-lg" id="save-template-btn">Save Template</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Settings Page ═══ -->
+      <div class="page hidden" id="page-settings">
+        <div class="page-header">
+          <h2>Settings</h2>
+          <div class="description">Configure your workspace.</div>
+        </div>
+        <div class="page-body">
+          <div class="card mb-5" style="max-width:600px">
+            <h3 class="card-title mb-4">Appearance</h3>
+            <div class="flex gap-3">
+              <button class="btn" id="theme-dark-btn">🌙 Dark</button>
+              <button class="btn" id="theme-light-btn">☀ Light</button>
+            </div>
+          </div>
+
+          <div class="card mb-5" style="max-width:600px">
+            <h3 class="card-title mb-4">Token Budget</h3>
+            <p class="text-sm text-muted mb-4">Track prompt size against your model's context window.</p>
+            <div class="flex gap-3" style="flex-wrap:wrap">
+              <button class="btn budget-preset" data-budget="0">No limit</button>
+              <button class="btn budget-preset" data-budget="8000">8K</button>
+              <button class="btn budget-preset" data-budget="32000">32K</button>
+              <button class="btn budget-preset" data-budget="128000">128K</button>
+              <button class="btn budget-preset" data-budget="200000">200K</button>
+            </div>
+            <div class="input-group mt-4">
+              <label class="input-label">Custom limit</label>
+              <input class="input" id="budget-custom" type="number" placeholder="0 = unlimited" style="max-width:200px">
+            </div>
+          </div>
+
+          <div class="card mb-5" style="max-width:600px">
+            <h3 class="card-title mb-4">Library Stats</h3>
+            <div class="metrics-row" id="settings-stats"></div>
+          </div>
+
+          <div class="card" style="max-width:600px">
+            <h3 class="card-title mb-4">About</h3>
+            <p class="text-sm text-muted">MarkItDown Prompt Studio v2.0</p>
+            <p class="text-sm text-muted mt-2">Powered by Microsoft MarkItDown</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title"></h3>
+        <button class="btn btn-ghost btn-icon" id="modal-close">✕</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Hidden file input for import -->
+  <input type="file" id="import-input" hidden accept=".md,.txt">
+
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages/convert.js"></script>
+  <script src="js/pages/library.js"></script>
+  <script src="js/pages/templates.js"></script>
+  <script src="js/pages/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
